@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        sans: ["Manrope", "Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
         // Storefront home page only (see pages/Storefront.tsx).
         shop: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
         display: ['"Caveat Brush"', "cursive"],
@@ -57,6 +57,14 @@ export default {
           navy: "#14284b",
           ink: "#171717",
         },
+        // Design tokens (styles/tokens.css).
+        canvas: "rgb(var(--canvas) / <alpha-value>)",
+        surface: { DEFAULT: "rgb(var(--surface) / <alpha-value>)", 2: "rgb(var(--surface-2) / <alpha-value>)" },
+        ink: { DEFAULT: "rgb(var(--ink) / <alpha-value>)", 2: "rgb(var(--ink-2) / <alpha-value>)", 3: "rgb(var(--ink-3) / <alpha-value>)" },
+        line: "rgb(var(--line) / <alpha-value>)",
+        accent: { DEFAULT: "rgb(var(--accent) / <alpha-value>)", strong: "rgb(var(--accent-strong) / <alpha-value>)", soft: "rgb(var(--accent-soft) / <alpha-value>)" },
+        good: { DEFAULT: "rgb(var(--good) / <alpha-value>)", soft: "rgb(var(--good-soft) / <alpha-value>)" },
+        warn: { DEFAULT: "rgb(var(--warn) / <alpha-value>)", soft: "rgb(var(--warn-soft) / <alpha-value>)" },
         significance: {
           noise: "#94a3b8",
           minor: "#60a5fa",
@@ -65,7 +73,9 @@ export default {
           critical: "#f87171",
         },
       },
+      borderRadius: { card: "var(--radius-card)", row: "var(--radius-row)" },
       boxShadow: {
+        soft: "var(--shadow-soft)",
         card: "0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6)",
         glow: "0 0 0 1px rgb(107 114 242 / 0.35), 0 8px 30px -8px rgb(107 114 242 / 0.35)",
       },

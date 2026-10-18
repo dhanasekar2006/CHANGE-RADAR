@@ -1,3 +1,5 @@
+@import "./tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,29 +31,31 @@
   --sky-950: 29 31 74;
 }
 
+/* Price app: the old slate/sky scale is remapped onto the design tokens, so every existing
+   slate-* / sky-* class follows the redesign (and dark mode). Smaller number = darker text. */
 .pro {
-  --slate-50: 3 7 18;
-  --slate-100: 17 24 39;
-  --slate-200: 31 41 55;
-  --slate-300: 55 65 81;
-  --slate-400: 75 85 99;
-  --slate-500: 107 114 128;
-  --slate-600: 156 163 175;
-  --slate-700: 209 213 219;
-  --slate-800: 229 231 235;
-  --slate-900: 255 255 255;
-  --slate-950: 255 255 255;
-  --sky-50: 239 246 255;
-  --sky-100: 219 234 254;
-  --sky-200: 30 64 175;
-  --sky-300: 29 78 216;
-  --sky-400: 37 99 235;
-  --sky-500: 37 99 235;
-  --sky-600: 29 78 216;
-  --sky-700: 30 64 175;
-  --sky-800: 30 58 138;
-  --sky-900: 23 37 84;
-  --sky-950: 15 23 42;
+  --slate-50: var(--ink);
+  --slate-100: var(--ink);
+  --slate-200: var(--ink);
+  --slate-300: var(--ink-2);
+  --slate-400: var(--ink-2);
+  --slate-500: var(--ink-2);
+  --slate-600: var(--ink-3);
+  --slate-700: var(--line);
+  --slate-800: var(--line);
+  --slate-900: var(--surface);
+  --slate-950: var(--canvas);
+  --sky-50: var(--accent-soft);
+  --sky-100: var(--accent-soft);
+  --sky-200: var(--accent-strong);
+  --sky-300: var(--accent-strong);
+  --sky-400: var(--accent);
+  --sky-500: var(--accent);
+  --sky-600: var(--accent);
+  --sky-700: var(--accent-strong);
+  --sky-800: var(--accent-strong);
+  --sky-900: var(--accent-strong);
+  --sky-950: var(--accent-strong);
 }
 
 html,
@@ -134,57 +138,70 @@ body,
   }
 }
 
-/* Professional light theme for the price app: flat white surfaces, hairline borders, one blue accent. */
+/* Price app components: soft canvas, white rounded cards, black pill buttons, one violet accent. */
 .pro {
   @apply bg-slate-950 text-slate-100;
 }
 .pro .card {
-  @apply bg-white shadow-none backdrop-blur-none;
+  @apply rounded-[24px] border-0 bg-slate-900 backdrop-blur-none;
+  box-shadow: var(--shadow-soft);
 }
 .pro .card-hover {
-  @apply hover:translate-y-0 hover:border-slate-700 hover:bg-white hover:shadow-md;
+  @apply transition-shadow duration-150 hover:translate-y-0 hover:bg-slate-900;
+}
+.pro .btn {
+  @apply min-h-[44px] rounded-full px-5 text-sm font-semibold;
 }
 .pro .btn-primary,
 .pro .shadow-glow {
   box-shadow: none;
 }
 .pro .btn-primary {
-  @apply text-white;
+  background: rgb(var(--ink));
+  color: rgb(var(--surface));
+}
+.pro .btn-primary:hover {
+  background: rgb(var(--ink) / 0.86);
+}
+.pro .btn-ghost {
+  @apply border border-slate-800 bg-slate-900 text-slate-100 hover:bg-slate-900;
+  border-color: rgb(var(--line));
+}
+.pro .btn-ghost:hover {
+  border-color: rgb(var(--ink-3));
 }
 .pro .input {
-  @apply bg-white;
+  @apply min-h-[44px] rounded-[16px] border-slate-800 bg-slate-900;
 }
 .pro .eyebrow {
   @apply tracking-wider;
 }
 .pro :focus-visible {
-  @apply ring-sky-500/60 ring-offset-white;
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+  box-shadow: none;
 }
 .pro ::selection {
-  @apply bg-sky-500/25;
+  background: rgb(var(--accent) / 0.25);
 }
-/* Status colors tuned for white (the defaults are pale tints meant for dark pages). */
+/* Status colors follow the tokens. */
 .pro .text-emerald-200,
 .pro .text-emerald-300,
 .pro .text-emerald-400 {
-  color: #047857;
+  color: rgb(var(--good));
 }
 .pro .text-amber-300,
-.pro .text-amber-400 {
-  color: #b45309;
-}
+.pro .text-amber-400,
+.pro .text-orange-200,
 .pro .text-red-300,
 .pro .text-red-400 {
-  color: #b91c1c;
-}
-.pro .text-orange-200 {
-  color: #9a3412;
+  color: rgb(var(--warn));
 }
 
-/* Price app: plain white all the way down, no page tint behind it. */
+/* Price app: the soft canvas goes all the way down, no page tint behind it. */
 html:has(.pro),
 body:has(.pro),
 body:has(.pro) #root {
-  background: #fff;
+  background: rgb(var(--canvas));
   background-image: none;
 }

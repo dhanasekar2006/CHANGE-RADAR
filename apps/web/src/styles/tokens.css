@@ -1,0 +1,61 @@
+/* Design tokens (space-separated RGB so Tailwind opacity modifiers work). Light by default;
+   dark follows the OS unless <html data-theme="light|dark"> forces one. */
+:root {
+  --canvas: 244 243 248;
+  --surface: 255 255 255;
+  --surface-2: 247 246 251;
+  --ink: 17 17 20;
+  --ink-2: 85 85 106;
+  --ink-3: 118 118 137;
+  --line: 232 231 239;
+  --accent: 124 92 255;
+  --accent-strong: 91 63 214;
+  --accent-soft: 238 233 255;
+  --good: 19 138 91;
+  --good-soft: 227 245 236;
+  --warn: 194 65 12;
+  --warn-soft: 253 236 227;
+
+  --radius-card: 24px;
+  --radius-row: 16px;
+  --shadow-soft: 0 8px 24px rgba(17, 17, 20, 0.06);
+  --motion: 160ms ease-out;
+}
+
+:root[data-theme="dark"] {
+  --canvas: 14 14 18;
+  --surface: 23 23 29;
+  --surface-2: 30 30 38;
+  --ink: 244 244 247;
+  --ink-2: 184 184 200;
+  --ink-3: 150 150 166;
+  --line: 42 42 53;
+  --accent: 143 115 255;
+  --accent-strong: 178 158 255;
+  --accent-soft: 42 34 80;
+  --good: 74 222 154;
+  --good-soft: 18 40 31;
+  --warn: 251 146 60;
+  --warn-soft: 51 32 15;
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: 14 14 18;
+    --surface: 23 23 29;
+    --surface-2: 30 30 38;
+    --ink: 244 244 247;
+    --ink-2: 184 184 200;
+    --ink-3: 150 150 166;
+    --line: 42 42 53;
+    --accent: 143 115 255;
+    --accent-strong: 178 158 255;
+    --accent-soft: 42 34 80;
+    --good: 74 222 154;
+    --good-soft: 18 40 31;
+    --warn: 251 146 60;
+    --warn-soft: 51 32 15;
+    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
