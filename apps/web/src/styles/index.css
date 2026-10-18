@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens (space-separated RGB so Tailwind opacity modifiers work). Dark is the default;
+   the price app wraps itself in `.pro` for a neutral light theme. */
+:root {
+  --slate-50: 246 247 251;
+  --slate-100: 233 236 245;
+  --slate-200: 210 215 230;
+  --slate-300: 170 178 200;
+  --slate-400: 141 150 176;
+  --slate-500: 113 122 150;
+  --slate-600: 75 84 112;
+  --slate-700: 50 58 82;
+  --slate-800: 34 40 64;
+  --slate-900: 22 27 46;
+  --slate-950: 11 14 26;
+  --sky-50: 238 240 255;
+  --sky-100: 224 228 255;
+  --sky-200: 199 205 255;
+  --sky-300: 165 174 255;
+  --sky-400: 135 145 251;
+  --sky-500: 107 114 242;
+  --sky-600: 86 89 224;
+  --sky-700: 70 71 192;
+  --sky-800: 57 58 152;
+  --sky-900: 48 51 120;
+  --sky-950: 29 31 74;
+}
+
+.pro {
+  --slate-50: 3 7 18;
+  --slate-100: 17 24 39;
+  --slate-200: 31 41 55;
+  --slate-300: 55 65 81;
+  --slate-400: 75 85 99;
+  --slate-500: 107 114 128;
+  --slate-600: 156 163 175;
+  --slate-700: 209 213 219;
+  --slate-800: 229 231 235;
+  --slate-900: 255 255 255;
+  --slate-950: 255 255 255;
+  --sky-50: 239 246 255;
+  --sky-100: 219 234 254;
+  --sky-200: 30 64 175;
+  --sky-300: 29 78 216;
+  --sky-400: 37 99 235;
+  --sky-500: 37 99 235;
+  --sky-600: 29 78 216;
+  --sky-700: 30 64 175;
+  --sky-800: 30 58 138;
+  --sky-900: 23 37 84;
+  --sky-950: 15 23 42;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-950 font-sans text-slate-100 antialiased;
+    background-image:
+      radial-gradient(60rem 30rem at 85% -10%, rgb(107 114 242 / 0.16), transparent 60%),
+      radial-gradient(40rem 24rem at -5% 0%, rgb(45 212 191 / 0.07), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-sky-400/70 ring-offset-2 ring-offset-slate-950;
+  }
+
+  ::selection {
+    @apply bg-sky-500/40;
+  }
+}
+
+/* Shared building blocks. Pages compose these instead of repeating long class strings. */
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-800 bg-slate-900/60 shadow-card backdrop-blur;
+  }
+
+  .card-hover {
+    @apply transition duration-150 hover:-translate-y-0.5 hover:border-sky-500/40 hover:bg-slate-900;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-sky-600 text-white shadow-glow hover:bg-sky-500;
+  }
+
+  .btn-ghost {
+    @apply btn border border-slate-700 text-slate-200 hover:border-slate-600 hover:bg-slate-800/70;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-widest text-slate-500;
+  }
+}
+
+/* The landing and storefront pages are light; the global focus ring assumes a dark page behind its offset. */
+.landing :focus-visible,
+.storefront :focus-visible,
+.overview :focus-visible {
+  @apply ring-offset-white;
+}
+
+/* Storefront: zigzag edge hanging under the dark top bar. */
+.sf-zigzag {
+  height: 8px;
+  background:
+    linear-gradient(135deg, #212a39 25%, transparent 25%) 0 0 / 16px 16px,
+    linear-gradient(225deg, #212a39 25%, transparent 25%) 0 0 / 16px 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sweep,
+  .animate-pulse {
+    animation: none;
+  }
+  .card-hover {
+    @apply transition-none hover:translate-y-0;
+  }
+}
+
+/* Professional light theme for the price app: flat white surfaces, hairline borders, one blue accent. */
+.pro {
+  @apply bg-slate-950 text-slate-100;
+}
+.pro .card {
+  @apply bg-white shadow-none backdrop-blur-none;
+}
+.pro .card-hover {
+  @apply hover:translate-y-0 hover:border-slate-700 hover:bg-white hover:shadow-md;
+}
+.pro .btn-primary,
+.pro .shadow-glow {
+  box-shadow: none;
+}
+.pro .btn-primary {
+  @apply text-white;
+}
+.pro .input {
+  @apply bg-white;
+}
+.pro .eyebrow {
+  @apply tracking-wider;
+}
+.pro :focus-visible {
+  @apply ring-sky-500/60 ring-offset-white;
+}
+.pro ::selection {
+  @apply bg-sky-500/25;
+}
+/* Status colors tuned for white (the defaults are pale tints meant for dark pages). */
+.pro .text-emerald-200,
+.pro .text-emerald-300,
+.pro .text-emerald-400 {
+  color: #047857;
+}
+.pro .text-amber-300,
+.pro .text-amber-400 {
+  color: #b45309;
+}
+.pro .text-red-300,
+.pro .text-red-400 {
+  color: #b91c1c;
+}
+.pro .text-orange-200 {
+  color: #9a3412;
+}
+
+/* Price app: plain white all the way down, no page tint behind it. */
+html:has(.pro),
+body:has(.pro),
+body:has(.pro) #root {
+  background: #fff;
+  background-image: none;
+}

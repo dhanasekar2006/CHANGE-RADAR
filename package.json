@@ -1,0 +1,17 @@
+{
+  "name": "changeradar",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "install:web": "npm --prefix apps/web install",
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "preview": "npm --prefix apps/web run preview",
+    "lint": "npm --prefix apps/web run lint",
+    "format": "npm --prefix apps/web run format",
+    "test": "npm --prefix apps/web run test"
+  },
+  "dependencies": {
+    "@frontman-ai/astro": "^3.1.1"
+  }
+}
