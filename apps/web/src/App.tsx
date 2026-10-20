@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { PriceLayout } from "@/components/PriceLayout";
 import { Alerts } from "@/pages/Alerts";
+import { DesignSystem } from "@/pages/DesignSystem";
 import { Home } from "@/pages/Home";
 import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/Login";
@@ -17,6 +18,7 @@ export function App() {
     <Routes>
       <Route path="/" element={<Storefront />} />
       <Route path="/project" element={<Project />} />
+      {import.meta.env.DEV && <Route path="/design" element={<DesignSystem />} />}
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       {/* Browsing is public; alerts need a signed-in user. */}

@@ -1,3 +1,1 @@
-export function Skeleton({ className = "" }: { className?: string }) {
-  return <div aria-hidden className={`animate-pulse rounded-md bg-slate-800 ${className}`} />;
-}
+export { Skeleton } from "@/components/ui/Skeleton";
