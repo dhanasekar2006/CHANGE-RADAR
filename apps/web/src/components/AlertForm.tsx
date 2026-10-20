@@ -1,13 +1,17 @@
+import { Mail, MessageCircle, Send } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { useCreateAlert } from "@/api/priceHooks";
+import { Button } from "@/components/ui/Button";
+import { ListRow } from "@/components/ui/ListRow";
+import { Toggle } from "@/components/ui/Toggle";
 import { useAuthed } from "@/hooks/useAuthed";
 import { formatINR } from "@/lib/format";
 import type { AlertChannel } from "@/types/prices";
 
 const inputClass =
-  "w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-sky-500";
+  "h-12 w-full rounded-row border border-line bg-surface px-4 text-[15px] text-ink outline-none placeholder:text-ink-3 focus:border-accent";
 
 // Same rule as the API: "+", country code, 8 to 15 digits in total. Spaces and dashes are allowed while typing.
 const PHONE = /^\+[1-9]\d{7,14}$/;
@@ -34,8 +38,8 @@ export function AlertForm({ productId, productName, bestPrice }: { productId: st
 
   if (!authed) {
     return (
-      <p className="text-sm text-slate-400">
-        <Link to={`/login?next=${encodeURIComponent(location.pathname)}`} className="text-sky-400 hover:underline">
+      <p className="text-[15px] text-ink-2">
+        <Link to={`/login?next=${encodeURIComponent(location.pathname)}`} className="font-bold text-accent-strong hover:underline">
           Sign in
         </Link>{" "}
         to get an alert when this drops to your price.
@@ -63,9 +67,9 @@ export function AlertForm({ productId, productName, bestPrice }: { productId: st
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <label className="block space-y-1">
-        <span className="text-sm text-slate-400">Alert me when the price is at or below (₹)</span>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <label className="block space-y-2">
+        <span className="text-[15px] font-semibold text-ink">Alert me when the price is at or below (₹)</span>
         <input
           type="number"
           min={1}
@@ -78,14 +82,14 @@ export function AlertForm({ productId, productName, bestPrice }: { productId: st
         />
       </label>
       {bestPrice !== null && bestPrice > 1 && (
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-slate-500">Quick pick:</span>
+        <div className="flex flex-wrap items-center gap-2 text-[13px]">
+          <span className="text-ink-2">Quick pick:</span>
           {PRESETS.map((preset) => (
             <button
               key={preset.label}
               type="button"
               onClick={() => setTarget(String(preset.price(bestPrice)))}
-              className="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300 hover:border-sky-500 hover:text-sky-200"
+              className="min-h-[36px] rounded-full border border-line px-3 font-semibold text-ink hover:border-accent"
             >
               {preset.label}
             </button>
@@ -93,21 +97,17 @@ export function AlertForm({ productId, productName, bestPrice }: { productId: st
         </div>
       )}
       {bestPrice !== null && targetNumber >= bestPrice && targetNumber > 0 && (
-        <p className="text-xs text-amber-400">
+        <p className="text-[13px] text-warn">
           It's already {formatINR(bestPrice)}, at or below this target, so you'll be alerted on the next check.
         </p>
       )}
 
-      <fieldset className="space-y-2 text-sm">
-        <legend className="mb-1 text-slate-400">Notify me by</legend>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} /> Email
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={whatsapp} onChange={(e) => setWhatsapp(e.target.checked)} /> WhatsApp
-        </label>
+      <fieldset className="space-y-1">
+        <legend className="mb-1 text-[15px] font-semibold text-ink">Notify me by</legend>
+        <ListRow icon={Mail} label="Email" action={<Toggle label="Email" checked={email} onChange={setEmail} />} />
+        <ListRow icon={MessageCircle} label="WhatsApp" action={<Toggle label="WhatsApp" checked={whatsapp} onChange={setWhatsapp} />} />
         {whatsapp && (
-          <div className="space-y-1">
+          <div className="space-y-1 px-2">
             <input
               type="tel"
               inputMode="tel"
@@ -120,38 +120,40 @@ export function AlertForm({ productId, productName, bestPrice }: { productId: st
               className={inputClass}
             />
             {showPhoneError ? (
-              <p role="alert" className="text-xs text-red-400">
+              <p role="alert" className="text-[13px] text-warn">
                 Include the country code, e.g. +91 98765 43210.
               </p>
             ) : (
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-ink-2">
                 By adding your number you agree to receive WhatsApp messages about this alert.
               </p>
             )}
           </div>
         )}
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={telegram} onChange={(e) => setTelegram(e.target.checked)} /> Telegram
-        </label>
+        <ListRow icon={Send} label="Telegram" action={<Toggle label="Telegram" checked={telegram} onChange={setTelegram} />} />
         {telegram && (
-          <input value={chatId} onChange={(e) => setChatId(e.target.value)} placeholder="Telegram chat id" className={inputClass} />
+          <div className="px-2">
+            <input
+              value={chatId}
+              onChange={(e) => setChatId(e.target.value)}
+              placeholder="Telegram chat id"
+              aria-label="Telegram chat id"
+              className={inputClass}
+            />
+          </div>
         )}
-        <p className="text-xs text-slate-500">You'll always see an on-screen notice while this page is open.</p>
+        <p className="px-2 pt-1 text-[13px] text-ink-2">You'll always see an on-screen notice while this page is open.</p>
       </fieldset>
 
       {createAlert.isError && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-[15px] text-warn">
           Couldn't create the alert. Please try again.
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={!valid || createAlert.isPending}
-        className="rounded-md bg-sky-600 px-4 py-2 text-sm font-medium hover:bg-sky-500 disabled:opacity-50"
-      >
+      <Button type="submit" disabled={!valid || createAlert.isPending} className="w-full">
         {createAlert.isPending ? "Saving…" : "Set price alert"}
-      </button>
+      </Button>
     </form>
   );
 }
