@@ -5,7 +5,9 @@ import { AlertRow } from "@/components/AlertRow";
 import { DealCard, ProductCard } from "@/components/ProductCard";
 import { EmptyState, ErrorState } from "@/components/QueryState";
 import { Skeleton } from "@/components/Skeleton";
+import { Welcome } from "@/components/Welcome";
 import { useAuthed } from "@/hooks/useAuthed";
+import { useWelcome } from "@/hooks/useWelcome";
 import { useAuthStore } from "@/store/auth";
 
 const icon = (d: string) => (
@@ -44,12 +46,15 @@ export function PriceDashboard() {
   const tracked = useSearch("");
   const deals = useDeals();
   const alerts = useAlerts(authed);
+  const welcome = useWelcome();
 
   const alertList = alerts.data ?? [];
   const reached = alertList.filter((a) => a.triggered_at).length;
   const watching = alertList.length - reached;
   const bestDrop = deals.data?.reduce((max, d) => Math.max(max, d.drop_pct), 0) ?? 0;
   const firstName = user?.full_name?.split(" ")[0] ?? user?.email?.split("@")[0];
+
+  if (welcome.show) return <Welcome onStart={welcome.dismiss} />;
 
   return (
     <div className="space-y-8">
