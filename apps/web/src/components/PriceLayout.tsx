@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import { useAlerts } from "@/api/priceHooks";
-import { Navbar } from "@/components/Navbar";
+import { BottomNav, MobileTopBar, Sidebar } from "@/components/AppNav";
 import { Toaster } from "@/components/Toaster";
 import { useAuthed } from "@/hooks/useAuthed";
 import { useLivePrices } from "@/hooks/useLivePrices";
@@ -15,11 +15,14 @@ export function PriceLayout() {
 
   return (
     <div className="pro min-h-full">
-      <Navbar />
-
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <Outlet />
-      </main>
+      <Sidebar />
+      <div className="lg:pl-64">
+        <MobileTopBar />
+        <main className="mx-auto max-w-[1200px] px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-10">
+          <Outlet />
+        </main>
+      </div>
+      <BottomNav />
       <Toaster />
     </div>
   );
