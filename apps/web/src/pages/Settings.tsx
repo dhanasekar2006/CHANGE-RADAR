@@ -70,7 +70,7 @@ export function Settings() {
           <ListRow
             icon={Mail}
             label="Email"
-            value={user ? `${user.email} � set per alert` : "Set per alert"}
+            value={user ? `${user.email} · set per alert` : "Set per alert"}
           />
           <ListRow icon={Send} label="Telegram" value="Set per alert" />
           <ListRow

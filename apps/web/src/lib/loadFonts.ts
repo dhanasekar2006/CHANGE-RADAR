@@ -17,3 +17,6 @@ export const STOREFRONT_FONTS = `${GOOGLE}?family=Caveat+Brush&family=Montserrat
 
 /** Project overview (/project): Rajdhani headings and Poppins body. */
 export const PROJECT_FONTS = `${GOOGLE}?family=Poppins:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap`;
+
+/** Sign-in screen (/login): Sora. */
+export const LOGIN_FONTS = `${GOOGLE}?family=Sora:wght@400;500;600;700&display=swap`;
