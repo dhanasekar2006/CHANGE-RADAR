@@ -6,11 +6,15 @@ import { StoreFooter } from "@/components/StoreFooter";
 import { StoreHeader } from "@/components/StoreHeader";
 import { ProductArt } from "@/components/ui/ProductArt";
 import { formatINR } from "@/lib/format";
+import { STOREFRONT_FONTS, loadFonts } from "@/lib/loadFonts";
 import { artKind } from "@/lib/productArt";
 import type { Deal } from "@/types/prices";
 
 // Public storefront home: deals slider + category list, then a price-drops section.
 // Light themed like the landing page; the dashboard pages behind it stay dark.
+
+// Runs when this route chunk loads, before first paint of the page.
+loadFonts(STOREFRONT_FONTS);
 
 const PAGE_SIZE = 6;
 const SLIDE_MS = 6000;

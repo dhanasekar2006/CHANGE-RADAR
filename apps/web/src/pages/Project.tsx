@@ -2,9 +2,13 @@ import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { LogoMark } from "@/components/Logo";
+import { PROJECT_FONTS, loadFonts } from "@/lib/loadFonts";
 
 // Project overview page. All copy comes from README.md, docs/ and the packages/core layout;
 // nothing here is invented marketing. Light themed like the other public pages.
+
+// Runs when this route chunk loads, before first paint of the page.
+loadFonts(PROJECT_FONTS);
 
 const NAV = [
   { label: "Home", to: "/" },
