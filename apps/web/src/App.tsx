@@ -4,6 +4,7 @@ import { PriceLayout } from "@/components/PriceLayout";
 import { Alerts } from "@/pages/Alerts";
 import { DesignSystem } from "@/pages/DesignSystem";
 import { Home } from "@/pages/Home";
+import { Insights } from "@/pages/Insights";
 import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/Login";
 import { PriceDashboard } from "@/pages/PriceDashboard";
@@ -26,6 +27,7 @@ export function App() {
         <Route index element={<PriceDashboard />} />
         <Route path="search" element={<Home />} />
         <Route path="p/:productId" element={<Product />} />
+        <Route path="insights" element={<Insights />} />
         <Route path="alerts" element={<Alerts />} />
       </Route>
       <Route path="*" element={<Navigate to="/prices" replace />} />

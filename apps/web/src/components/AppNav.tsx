@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Bell, Home, Search, type LucideIcon } from "lucide-react";
+import { Bell, Home, Lightbulb, Search, type LucideIcon } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 
 import { USE_MOCK } from "@/api/config";
@@ -21,6 +21,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: "/prices", label: "Home", icon: Home, end: true, mobile: true },
   { to: "/prices/search", label: "Search", icon: Search },
+  { to: "/prices/insights", label: "Insights", icon: Lightbulb, mobile: true },
   { to: "/prices/alerts", label: "Watchlist", icon: Bell, mobile: true },
 ];
 
