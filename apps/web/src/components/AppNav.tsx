@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Bell, Home, Lightbulb, Search, Settings as SettingsIcon, type LucideIcon } from "lucide-react";
+import { Bell, Home, Lightbulb, Radar, Search, Settings as SettingsIcon, type LucideIcon } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 
 import { USE_MOCK } from "@/api/config";
@@ -16,6 +16,8 @@ interface NavItem {
   end?: boolean;
   /** Shown in the floating mobile bar (it has room for four). */
   mobile?: boolean;
+  /** Hidden from signed-out visitors and in mock mode (needs the real API). */
+  authedOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -23,6 +25,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/prices/search", label: "Search", icon: Search },
   { to: "/prices/insights", label: "Insights", icon: Lightbulb, mobile: true },
   { to: "/prices/alerts", label: "Watchlist", icon: Bell, mobile: true },
+  { to: "/prices/monitors", label: "Monitors", icon: Radar, authedOnly: true },
   { to: "/prices/settings", label: "Settings", icon: SettingsIcon, mobile: true },
 ];
 
@@ -45,6 +48,7 @@ function SessionControl() {
 
 /** Desktop (≥1024px): fixed left sidebar. */
 export function Sidebar() {
+  const authed = useAuthed();
   return (
     <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col justify-between border-r border-line bg-surface p-5 lg:flex">
       <div className="flex flex-col gap-8">
@@ -52,7 +56,7 @@ export function Sidebar() {
           <Logo name="VilaiWatch" />
         </Link>
         <nav aria-label="Main" className="flex flex-col gap-1">
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+          {NAV_ITEMS.filter((item) => !item.authedOnly || (authed && !USE_MOCK)).map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}

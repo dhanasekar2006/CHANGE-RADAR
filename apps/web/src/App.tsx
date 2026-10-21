@@ -8,13 +8,15 @@ import { Insights } from "@/pages/Insights";
 import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/Login";
 import { PriceDashboard } from "@/pages/PriceDashboard";
+import { Monitors } from "@/pages/Monitors";
 import { Product } from "@/pages/Product";
 import { Settings } from "@/pages/Settings";
 import { Project } from "@/pages/Project";
 import { Storefront } from "@/pages/Storefront";
 
 // The product is price tracking only. The generic page-monitoring screens (monitors, diffs,
-// channels, workspaces; see pages/Dashboard.tsx, Layout.tsx) are intentionally not routed.
+// channels, workspaces; see pages/Dashboard.tsx, Layout.tsx) are intentionally not routed;
+// /prices/monitors is a read-only summary of them.
 export function App() {
   return (
     <Routes>
@@ -30,6 +32,7 @@ export function App() {
         <Route path="p/:productId" element={<Product />} />
         <Route path="insights" element={<Insights />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="monitors" element={<Monitors />} />
         <Route path="alerts" element={<Alerts />} />
       </Route>
       <Route path="*" element={<Navigate to="/prices" replace />} />
