@@ -89,7 +89,8 @@ export function useDeleteMonitor(workspaceId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (monitorId: string) => api.delete<void>(`/workspaces/${workspaceId}/monitors/${monitorId}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["monitors", workspaceId] }),
+    // Only the list: invalidating the whole prefix would refetch the deleted monitor's own query (a 404).
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["monitors", workspaceId], exact: true }),
   });
 }
 
