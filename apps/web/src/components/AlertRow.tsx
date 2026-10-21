@@ -1,7 +1,11 @@
+import { Check, Eye, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useDeleteAlert, useUpdateAlert } from "@/api/priceHooks";
+import { Badge } from "@/components/ui/Badge";
+import { Button, IconButton } from "@/components/ui/Button";
+import { isReached } from "@/lib/alertStatus";
 import { formatINR } from "@/lib/format";
 import type { AlertChannel, PriceAlert } from "@/types/prices";
 
@@ -17,36 +21,26 @@ export function AlertRow({ alert }: { alert: PriceAlert }) {
   const [draft, setDraft] = useState(String(alert.target_price));
 
   const pending = alert.id.startsWith("pending-");
-  const reached =
-    alert.current_price !== null && alert.current_price <= alert.target_price;
+  const reached = isReached(alert);
 
   function save() {
     const next = Number(draft);
-    if (next > 0 && next !== alert.target_price)
-      update.mutate({ id: alert.id, patch: { target_price: next } });
+    if (next > 0 && next !== alert.target_price) update.mutate({ id: alert.id, patch: { target_price: next } });
     setEditing(false);
   }
 
   return (
-    <li
-      className={`rounded-lg border border-slate-800 p-4 ${pending ? "opacity-60" : ""}`}
-    >
+    <li className={`rounded-card bg-surface p-5 shadow-soft ${pending ? "opacity-60" : ""}`}>
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <Link
-            to={`/prices/p/${alert.product_id}`}
-            className="block truncate font-medium hover:underline"
-          >
+        <div className="min-w-0 space-y-2">
+          <Link to={`/prices/p/${alert.product_id}`} className="block truncate text-[15px] font-bold text-ink hover:underline">
             {alert.product_name}
           </Link>
-          <p className="mt-1 text-sm text-slate-400">
-            Now{" "}
-            <span className="font-medium text-slate-200">
-              {formatINR(alert.current_price)}
-            </span>
+          <p className="text-[13px] text-ink-2">
+            Now <span className="font-extrabold tabular-nums text-ink">{formatINR(alert.current_price)}</span>
             {" · "}target{" "}
             {editing ? (
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-2">
                 <input
                   type="number"
                   min={1}
@@ -55,59 +49,50 @@ export function AlertRow({ alert }: { alert: PriceAlert }) {
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && save()}
                   aria-label="New target price"
-                  className="w-28 rounded border border-slate-700 bg-slate-900 px-2 py-0.5 text-sm"
+                  className="min-h-[36px] w-28 rounded-row border border-line bg-surface-2 px-3 text-sm text-ink"
                 />
-                <button
-                  onClick={save}
-                  className="text-xs text-sky-400 hover:underline"
-                >
+                <button onClick={save} className="min-h-[36px] text-xs font-bold text-accent-strong hover:underline">
                   Save
                 </button>
               </span>
             ) : (
-              <span className="font-medium text-slate-200">
-                {formatINR(alert.target_price)}
-              </span>
+              <span className="font-extrabold tabular-nums text-ink">{formatINR(alert.target_price)}</span>
             )}
           </p>
-          <p className="mt-1 text-xs">
-            {alert.triggered_at ? (
-              <span className="text-emerald-400">
-                Triggered — change the target to re-arm it
-              </span>
-            ) : reached ? (
-              <span className="text-amber-400">
-                At target now; you'll be notified on the next check
-              </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {reached ? (
+              <Badge tone="good">
+                <Check size={14} strokeWidth={1.75} aria-hidden />
+                Target reached
+              </Badge>
             ) : (
-              <span className="text-slate-500">
-                Waiting for the price to drop
-              </span>
+              <Badge tone="neutral">
+                <Eye size={14} strokeWidth={1.75} aria-hidden />
+                Watching
+              </Badge>
             )}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            {alert.channels.length > 0
-              ? `Notify via ${alert.channels.map(channelLabel).join(" · ")}`
-              : "On-screen notice only"}
+            <span className="text-xs text-ink-2">
+              {alert.triggered_at
+                ? "Triggered. Change the target to re-arm it."
+                : reached
+                  ? "At target now; you'll be notified on the next check."
+                  : "Waiting for the price to drop."}
+            </span>
+          </div>
+          <p className="text-xs text-ink-2">
+            {alert.channels.length > 0 ? `Notify via ${alert.channels.map(channelLabel).join(" · ")}` : "On-screen notice only"}
           </p>
         </div>
-        <div className="flex shrink-0 gap-3 text-xs">
+        <div className="flex shrink-0 gap-2">
           {!editing && (
-            <button
-              onClick={() => setEditing(true)}
-              disabled={pending}
-              className="text-slate-400 hover:text-slate-200"
-            >
+            <Button variant="secondary" onClick={() => setEditing(true)} disabled={pending} className="!min-h-[44px]">
+              <Pencil size={16} strokeWidth={1.75} aria-hidden />
               Edit
-            </button>
+            </Button>
           )}
-          <button
-            onClick={() => remove.mutate(alert.id)}
-            disabled={pending}
-            className="text-slate-400 hover:text-red-400"
-          >
-            Remove
-          </button>
+          <IconButton label="Remove" onClick={() => remove.mutate(alert.id)} disabled={pending}>
+            <Trash2 size={20} strokeWidth={1.75} aria-hidden />
+          </IconButton>
         </div>
       </div>
     </li>
