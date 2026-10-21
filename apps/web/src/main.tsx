@@ -3,11 +3,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
+import { loopbackRedirect } from "@/api/config";
 import { App } from "@/App";
 import { initTheme } from "@/hooks/useTheme";
 import "@/styles/index.css";
 
 initTheme();
+
+const redirect = loopbackRedirect();
+if (redirect) window.location.replace(redirect);
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

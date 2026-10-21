@@ -18,7 +18,7 @@ interface TokenPair {
 
 function describeError(err: unknown): string {
   if (err instanceof TypeError) {
-    return `Can't reach the server at ${API_BASE_URL}. Make sure the API is running, then try again.`;
+    return `Can't reach the server at ${API_BASE_URL}. Make sure the API is running and that you opened this page at its allowed address (http://localhost:5173), then try again.`;
   }
   if (err instanceof ApiError) {
     if (err.status === 429)
@@ -82,9 +82,9 @@ export function Login() {
             email,
             password,
             full_name: name,
-            // The API still requires a workspace; price tracking doesn't surface it. Named from the email
-            // (unique per account) because the API derives a unique slug from the name.
-            workspace_name: `${email.split("@")[0]}'s tracker`.slice(0, 255),
+            // The API still requires a workspace; price tracking doesn't surface it. It derives a unique
+            // slug from the name and answers 500 on a clash, so add a random suffix.
+            workspace_name: `${email.split("@")[0].slice(0, 200)}'s tracker ${crypto.randomUUID().slice(0, 6)}`,
           }),
         )
       }
