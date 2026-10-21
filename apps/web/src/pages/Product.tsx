@@ -1,9 +1,16 @@
 import clsx from "clsx";
+import { ProductArt } from "@/components/ui/ProductArt";
+import { artKind } from "@/lib/productArt";
 import { ArrowLeft, BellPlus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { useAlerts, useDeleteAlert, useHistory, useProduct } from "@/api/priceHooks";
+import {
+  useAlerts,
+  useDeleteAlert,
+  useHistory,
+  useProduct,
+} from "@/api/priceHooks";
 import { AlertForm } from "@/components/AlertForm";
 import { PriceChart } from "@/components/PriceChart";
 import { EmptyState, ErrorState } from "@/components/QueryState";
@@ -61,10 +68,18 @@ function AlertPanel({
       {alerts.length > 0 && (
         <ul className="space-y-2">
           {alerts.map((alert) => (
-            <li key={alert.id} className="flex items-center justify-between gap-3 rounded-row bg-surface-2 px-4 py-3 text-[15px]">
+            <li
+              key={alert.id}
+              className="flex items-center justify-between gap-3 rounded-row bg-surface-2 px-4 py-3 text-[15px]"
+            >
               <span className="text-ink">
-                At or below <strong className="tabular-nums">{formatINR(alert.target_price)}</strong>
-                {alert.triggered_at && <Badge tone="good">Target reached</Badge>}
+                At or below{" "}
+                <strong className="tabular-nums">
+                  {formatINR(alert.target_price)}
+                </strong>
+                {alert.triggered_at && (
+                  <Badge tone="good">Target reached</Badge>
+                )}
               </span>
               <button
                 onClick={() => deleteAlert.mutate(alert.id)}
@@ -77,7 +92,11 @@ function AlertPanel({
           ))}
         </ul>
       )}
-      <AlertForm productId={productId} productName={productName} bestPrice={bestPrice} />
+      <AlertForm
+        productId={productId}
+        productName={productName}
+        bestPrice={bestPrice}
+      />
     </div>
   );
 }
@@ -118,20 +137,38 @@ export function Product() {
   }, [history.data, product.data?.best_price, range, now]);
 
   if (product.isPending) return <ProductSkeleton />;
-  if (product.isError) return <ErrorState error={product.error} onRetry={() => product.refetch()} />;
+  if (product.isError)
+    return (
+      <ErrorState error={product.error} onRetry={() => product.refetch()} />
+    );
 
   const detail = product.data;
-  const myAlerts = (alerts.data ?? []).filter((a) => a.product_id === detail.id);
-  const changeVsAverage = stats ? ((stats.current - stats.average) / stats.average) * 100 : null;
-  const atLow = stats !== null && advice.tone !== "unknown" && stats.current <= stats.lowest * 1.02;
+  const myAlerts = (alerts.data ?? []).filter(
+    (a) => a.product_id === detail.id,
+  );
+  const changeVsAverage = stats
+    ? ((stats.current - stats.average) / stats.average) * 100
+    : null;
+  const atLow =
+    stats !== null &&
+    advice.tone !== "unknown" &&
+    stats.current <= stats.lowest * 1.02;
 
   const panel = (
-    <AlertPanel productId={detail.id} productName={detail.name} bestPrice={detail.best_price} alerts={myAlerts} />
+    <AlertPanel
+      productId={detail.id}
+      productName={detail.name}
+      bestPrice={detail.best_price}
+      alerts={myAlerts}
+    />
   );
 
   return (
     <div className={clsx("space-y-6", !isDesktop && "pb-20")}>
-      <Link to="/prices/search" className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-bold text-ink-2 hover:text-ink">
+      <Link
+        to="/prices/search"
+        className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] font-bold text-ink-2 hover:text-ink"
+      >
         <ArrowLeft size={16} strokeWidth={1.75} aria-hidden /> Search
       </Link>
 
@@ -139,33 +176,57 @@ export function Product() {
         <div className="min-w-0 space-y-8">
           <Card className="grid gap-6 sm:grid-cols-[200px_1fr] sm:items-center">
             {detail.image_url ? (
-              <img src={detail.image_url} alt="" className="aspect-square w-full rounded-[20px] bg-surface-2 object-cover" />
+              <img
+                src={detail.image_url}
+                alt=""
+                className="aspect-square w-full rounded-[20px] bg-surface-2 object-cover"
+              />
             ) : (
-              <div
-                aria-hidden
-                className="flex aspect-square w-full items-center justify-center rounded-[20px] bg-surface-2 text-5xl font-extrabold text-ink-3"
-              >
-                {detail.name.charAt(0)}
-              </div>
+              <ProductArt
+                kind={artKind(detail.name, detail.category)}
+                className="aspect-square w-full rounded-[20px]"
+              />
             )}
             <div className="space-y-3">
               <p className="text-[13px] text-ink-2">
                 {detail.category ? `${detail.category} · ` : ""}
                 <UpdatedAgo checkedAt={detail.last_checked_at} />
               </p>
-              <h1 className="text-[32px] font-extrabold leading-[38px] text-ink">{detail.name}</h1>
+              <h1 className="text-[32px] font-extrabold leading-[38px] text-ink">
+                {detail.name}
+              </h1>
               <div className="flex flex-wrap items-center gap-3">
-                <PriceTag price={detail.best_price} changePct={changeVsAverage === null ? null : Math.round(changeVsAverage * 10) / 10} size="lg" />
-                {atLow && <Badge tone="good">Lowest in {RANGE_LABEL[range]}</Badge>}
+                <PriceTag
+                  price={detail.best_price}
+                  changePct={
+                    changeVsAverage === null
+                      ? null
+                      : Math.round(changeVsAverage * 10) / 10
+                  }
+                  size="lg"
+                />
+                {atLow && (
+                  <Badge tone="good">Lowest in {RANGE_LABEL[range]}</Badge>
+                )}
               </div>
-              {detail.best_store && <p className="text-[13px] capitalize text-ink-2">Best price at {detail.best_store}</p>}
+              {detail.best_store && (
+                <p className="text-[13px] capitalize text-ink-2">
+                  Best price at {detail.best_store}
+                </p>
+              )}
             </div>
           </Card>
 
           <section aria-label="Price history" className="space-y-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-2xl font-extrabold leading-[30px] text-ink">Price history</h2>
-              <div role="tablist" aria-label="Range" className="flex gap-1 rounded-full bg-surface p-1 shadow-soft">
+              <h2 className="text-2xl font-extrabold leading-[30px] text-ink">
+                Price history
+              </h2>
+              <div
+                role="tablist"
+                aria-label="Range"
+                className="flex gap-1 rounded-full bg-surface p-1 shadow-soft"
+              >
                 {RANGES.map((r) => (
                   <button
                     key={r}
@@ -174,7 +235,9 @@ export function Product() {
                     onClick={() => setRange(r)}
                     className={clsx(
                       "min-h-[40px] min-w-[48px] rounded-full px-4 text-[13px] font-bold transition-colors duration-150",
-                      r === range ? "bg-ink text-surface" : "text-ink-2 hover:text-ink",
+                      r === range
+                        ? "bg-ink text-surface"
+                        : "text-ink-2 hover:text-ink",
                     )}
                   >
                     {r}
@@ -189,39 +252,71 @@ export function Product() {
                 <Skeleton className="h-72 w-full !rounded-card" />
               </div>
             ) : history.isError ? (
-              <ErrorState error={history.error} onRetry={() => history.refetch()} />
+              <ErrorState
+                error={history.error}
+                onRetry={() => history.refetch()}
+              />
             ) : history.data.length === 0 ? (
-              <EmptyState title="No price history yet" hint="The first check hasn't recorded a price. Check back soon." />
+              <EmptyState
+                title="No price history yet"
+                hint="The first check hasn't recorded a price. Check back soon."
+              />
             ) : (
               <>
-                <div className={clsx("rounded-card px-5 py-4", ADVICE_STYLE[advice.tone])}>
+                <div
+                  className={clsx(
+                    "rounded-card px-5 py-4",
+                    ADVICE_STYLE[advice.tone],
+                  )}
+                >
                   <p className="font-bold">{advice.headline}</p>
-                  <p className="mt-0.5 text-[15px] opacity-90">{advice.detail}</p>
+                  <p className="mt-0.5 text-[15px] opacity-90">
+                    {advice.detail}
+                  </p>
                 </div>
 
                 {stats && (
                   <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     <StatCard label="Lowest" value={formatINR(stats.lowest)} />
-                    <StatCard label="Average" value={formatINR(Math.round(stats.average))} />
-                    <StatCard label="Highest" value={formatINR(stats.highest)} />
+                    <StatCard
+                      label="Average"
+                      value={formatINR(Math.round(stats.average))}
+                    />
+                    <StatCard
+                      label="Highest"
+                      value={formatINR(stats.highest)}
+                    />
                     <StatCard
                       label="Now vs average"
-                      value={formatPct(((stats.current - stats.average) / stats.average) * 100)}
+                      value={formatPct(
+                        ((stats.current - stats.average) / stats.average) * 100,
+                      )}
                       tone={stats.current <= stats.average ? "good" : "bad"}
                     />
                   </dl>
                 )}
 
-                <Card className={clsx("!p-4", history.isPlaceholderData && "opacity-60")}>
+                <Card
+                  className={clsx(
+                    "!p-4",
+                    history.isPlaceholderData && "opacity-60",
+                  )}
+                >
                   <PriceChart history={history.data} range={range} now={now} />
                 </Card>
-                {best.length < 2 && <p className="text-[13px] text-ink-2">Only one price recorded so far, so the chart is flat.</p>}
+                {best.length < 2 && (
+                  <p className="text-[13px] text-ink-2">
+                    Only one price recorded so far, so the chart is flat.
+                  </p>
+                )}
               </>
             )}
           </section>
 
           <section aria-label="Prices by store" className="space-y-4">
-            <h2 className="text-2xl font-extrabold leading-[30px] text-ink">Prices by store</h2>
+            <h2 className="text-2xl font-extrabold leading-[30px] text-ink">
+              Prices by store
+            </h2>
             <StoreTable listings={detail.listings} productId={detail.id} />
           </section>
         </div>
@@ -239,8 +334,12 @@ export function Product() {
       {!isDesktop && (
         <>
           <div className="fixed inset-x-4 bottom-24 z-20">
-            <Button className="w-full shadow-soft" onClick={() => setSheetOpen(true)}>
-              <BellPlus size={20} strokeWidth={1.75} aria-hidden /> Set price alert
+            <Button
+              className="w-full shadow-soft"
+              onClick={() => setSheetOpen(true)}
+            >
+              <BellPlus size={20} strokeWidth={1.75} aria-hidden /> Set price
+              alert
             </Button>
           </div>
           <Sheet open={sheetOpen} onClose={closeSheet} title="Price alert">
