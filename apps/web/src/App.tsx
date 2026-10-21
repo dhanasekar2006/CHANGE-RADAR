@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { MonitorsGate } from "@/components/MonitorsGate";
 import { PriceLayout } from "@/components/PriceLayout";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { loadProductPage } from "@/lib/prefetch";
 
 /** Route-level code splitting for pages that export a named component. */
 function page<T extends Record<string, ComponentType>>(
@@ -30,7 +31,7 @@ const PriceDashboard = page(
   () => import("@/pages/PriceDashboard"),
   "PriceDashboard",
 );
-const Product = page(() => import("@/pages/Product"), "Product");
+const Product = page(loadProductPage, "Product");
 const Project = page(() => import("@/pages/Project"), "Project");
 const Settings = page(() => import("@/pages/Settings"), "Settings");
 const Storefront = page(() => import("@/pages/Storefront"), "Storefront");

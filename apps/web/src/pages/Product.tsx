@@ -179,6 +179,9 @@ export function Product() {
               <img
                 src={detail.image_url}
                 alt=""
+                width={200}
+                height={200}
+                decoding="async"
                 className="aspect-square w-full rounded-[20px] bg-surface-2 object-cover"
               />
             ) : (

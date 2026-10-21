@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/Badge";
 import { ProductArt } from "@/components/ui/ProductArt";
+import { prefetchProduct } from "@/lib/prefetch";
 import { artKind } from "@/lib/productArt";
 import { PriceTag } from "@/components/ui/PriceTag";
 import { formatINR } from "@/lib/format";
@@ -12,18 +13,24 @@ function Thumb({
   name,
   category,
   src,
+  size,
   className,
 }: {
   name: string;
   category?: string | null;
   src: string | null;
+  /** Intrinsic pixel size, so the browser reserves space before the image loads. */
+  size: number;
   className: string;
 }) {
   return src ? (
     <img
       src={src}
       alt=""
+      width={size}
+      height={size}
       loading="lazy"
+      decoding="async"
       className={clsx("bg-surface-2 object-cover", className)}
     />
   ) : (
@@ -35,9 +42,11 @@ export function ProductCard({ item }: { item: ProductSearchItem }) {
   return (
     <Link
       to={`/prices/p/${item.id}`}
+      {...prefetchProduct}
       className="flex items-center gap-4 rounded-card bg-surface p-4 shadow-soft transition-shadow duration-150 hover:shadow-md"
     >
       <Thumb
+        size={64}
         name={item.name}
         category={item.category}
         src={item.image_url}
@@ -71,10 +80,12 @@ export function DealCard({ deal }: { deal: Deal }) {
   return (
     <Link
       to={`/prices/p/${deal.product_id}`}
+      {...prefetchProduct}
       className="block w-64 shrink-0 snap-start rounded-card bg-surface p-3 shadow-soft transition-shadow duration-150 hover:shadow-md"
     >
       <div className="relative">
         <Thumb
+          size={240}
           name={deal.name}
           src={deal.image_url}
           className="aspect-square w-full rounded-[20px]"

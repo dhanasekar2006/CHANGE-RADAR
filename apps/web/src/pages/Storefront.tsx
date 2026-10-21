@@ -67,7 +67,10 @@ function Thumb({
     <img
       src={src}
       alt=""
+      width={96}
+      height={96}
       loading="lazy"
+      decoding="async"
       className={`bg-shop-mist object-cover ${className}`}
     />
   ) : (
@@ -132,6 +135,9 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
           <img
             src={current.image}
             alt=""
+            width={1280}
+            height={352}
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover opacity-40"
           />
         ) : (
