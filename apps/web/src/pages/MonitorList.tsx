@@ -22,10 +22,7 @@ export function MonitorList() {
           <p className="eyebrow">Watching</p>
           <h1 className="text-3xl font-bold tracking-tight">Monitors</h1>
         </div>
-        <Link
-          to={`/w/${workspaceId}/monitors/new`}
-          className="btn-primary"
-        >
+        <Link to={`/w/${workspaceId}/monitors/new`} className="btn-primary">
           New monitor
         </Link>
       </div>
@@ -34,13 +31,25 @@ export function MonitorList() {
 
       <div className="card divide-y divide-slate-800 overflow-hidden">
         {monitors?.map((monitor) => (
-          <div key={monitor.id} className="flex items-center justify-between px-4 py-3.5 transition hover:bg-slate-800/40">
-            <Link to={`/w/${workspaceId}/monitors/${monitor.id}`} className="min-w-0">
+          <div
+            key={monitor.id}
+            className="flex items-center justify-between px-4 py-3.5 transition hover:bg-slate-800/40"
+          >
+            <Link
+              to={`/w/${workspaceId}/monitors/${monitor.id}`}
+              className="min-w-0"
+            >
               <div className="truncate font-medium">{monitor.name}</div>
-              <div className="truncate text-xs text-slate-500">{monitor.url}</div>
+              <div className="truncate text-xs text-slate-500">
+                {monitor.url}
+              </div>
             </Link>
             <div className="flex items-center gap-4">
-              <span className={`text-xs font-medium ${STATUS_COLOR[monitor.status]}`}>{monitor.status}</span>
+              <span
+                className={`text-xs font-medium ${STATUS_COLOR[monitor.status]}`}
+              >
+                {monitor.status}
+              </span>
               <button
                 onClick={() => runNow.mutate(monitor.id)}
                 disabled={runNow.isPending}
@@ -52,7 +61,9 @@ export function MonitorList() {
           </div>
         ))}
         {monitors?.length === 0 && (
-          <div className="px-4 py-6 text-center text-sm text-slate-500">No monitors yet.</div>
+          <div className="px-4 py-6 text-center text-sm text-slate-500">
+            No monitors yet.
+          </div>
         )}
       </div>
     </div>

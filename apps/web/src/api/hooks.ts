@@ -75,3 +75,29 @@ export function useChannels(workspaceId: string | undefined) {
     enabled: Boolean(workspaceId),
   });
 }
+
+export function useUpdateMonitor(workspaceId: string | undefined, monitorId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: Partial<Monitor>) =>
+      api.patch<Monitor>(`/workspaces/${workspaceId}/monitors/${monitorId}`, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["monitors", workspaceId] }),
+  });
+}
+
+export function useDeleteMonitor(workspaceId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (monitorId: string) => api.delete<void>(`/workspaces/${workspaceId}/monitors/${monitorId}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["monitors", workspaceId] }),
+  });
+}
+
+export function useSetMonitorPaused(workspaceId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ monitorId, paused }: { monitorId: string; paused: boolean }) =>
+      api.post<Monitor>(`/workspaces/${workspaceId}/monitors/${monitorId}/${paused ? "pause" : "resume"}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["monitors", workspaceId] }),
+  });
+}
