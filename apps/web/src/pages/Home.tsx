@@ -12,7 +12,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 function CardSkeletons({ count = 3 }: { count?: number }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
       {Array.from({ length: count }, (_, i) => (
         <Skeleton key={i} className="h-24 w-full !rounded-card" />
       ))}
@@ -53,7 +53,7 @@ export function Home() {
         ) : search.isError ? (
           <ErrorState error={search.error} onRetry={() => search.refetch()} />
         ) : search.data.items.length > 0 ? (
-          <div className={`grid gap-3 sm:grid-cols-2 lg:grid-cols-3 ${search.isPlaceholderData ? "opacity-60" : ""}`}>
+          <div className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 ${search.isPlaceholderData ? "opacity-60" : ""}`}>
             {search.data.items.map((item) => (
               <ProductCard key={item.id} item={item} />
             ))}

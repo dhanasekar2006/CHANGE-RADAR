@@ -84,7 +84,7 @@ export function PriceDashboard() {
         <p className="text-[13px] text-ink-2">Cheapest in-stock price versus its 30-day average.</p>
       </section>
 
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         <section className="space-y-4">
           <SectionHeader title="Your watchlist" to="/prices/search" linkLabel="Search all" />
           {tracked.isPending ? (

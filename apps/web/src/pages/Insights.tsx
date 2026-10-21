@@ -81,7 +81,7 @@ export function Insights() {
       ) : insights.length === 0 ? (
         <EmptyState title="No notable changes" hint="Insights appear once a product has at least a week of price history." />
       ) : (
-        <ul className="grid gap-3 lg:grid-cols-2" aria-live="polite">
+        <ul className="grid grid-cols-1 gap-3 lg:grid-cols-2" aria-live="polite">
           {insights.map((insight) => (
             <InsightCard key={`${insight.productId}-${insight.text}`} insight={insight} />
           ))}
