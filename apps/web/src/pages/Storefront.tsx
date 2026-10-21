@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight, Menu, Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -73,16 +74,6 @@ function Thumb({
     <ProductArt kind={artKind(name, null)} className={className} />
   );
 }
-
-const iconProps = {
-  viewBox: "0 0 24 24",
-  "aria-hidden": true,
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 2,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-} as const;
 
 const arrowBtn =
   "flex h-10 w-10 items-center justify-center rounded-full border-2 transition disabled:cursor-not-allowed disabled:opacity-40";
@@ -196,18 +187,11 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
               aria-label={playing ? "Pause slideshow" : "Play slideshow"}
               className="ml-2 flex h-6 w-6 items-center justify-center rounded-full border border-white/60 text-white"
             >
-              <svg
-                {...iconProps}
-                className="h-3 w-3"
-                fill="currentColor"
-                strokeWidth={0}
-              >
-                {playing ? (
-                  <path d="M7 5h3v14H7zM14 5h3v14h-3z" />
-                ) : (
-                  <path d="M8 5v14l11-7z" />
-                )}
-              </svg>
+              {playing ? (
+                <Pause size={12} fill="currentColor" aria-hidden />
+              ) : (
+                <Play size={12} fill="currentColor" aria-hidden />
+              )}
             </button>
           </div>
           <div className="flex gap-2">
@@ -217,9 +201,7 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
               aria-label="Previous slide"
               className={`${arrowBtn} border-white text-white hover:bg-white hover:text-shop-ink`}
             >
-              <svg {...iconProps} className="h-4 w-4">
-                <path d="m15 6-6 6 6 6" />
-              </svg>
+              <ChevronLeft size={16} aria-hidden />
             </button>
             <button
               type="button"
@@ -227,9 +209,7 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
               aria-label="Next slide"
               className={`${arrowBtn} border-shop-blue bg-shop-blue text-white hover:border-white`}
             >
-              <svg {...iconProps} className="h-4 w-4">
-                <path d="m9 6 6 6-6 6" />
-              </svg>
+              <ChevronRight size={16} aria-hidden />
             </button>
           </div>
         </div>
@@ -248,9 +228,7 @@ function CategoryList({
   const rowClass =
     "flex items-center justify-between px-5 py-3 text-sm text-slate-700 transition hover:bg-shop-mist hover:text-shop-blue";
   const caret = (
-    <svg {...iconProps} className="h-3.5 w-3.5 text-slate-500">
-      <path d="m9 6 6 6-6 6" />
-    </svg>
+    <ChevronRight size={14} aria-hidden className="text-slate-500" />
   );
 
   return (
@@ -259,9 +237,7 @@ function CategoryList({
         id="categories-title"
         className="flex items-center gap-3 bg-shop-ink px-5 py-4 font-display text-lg uppercase tracking-wider text-white"
       >
-        <svg {...iconProps} className="h-4 w-4">
-          <path d="M4 7h16M4 12h16M4 17h16" />
-        </svg>
+        <Menu size={16} aria-hidden />
         All categories
       </h2>
       <ul className="divide-y divide-dashed divide-slate-200">
@@ -380,9 +356,7 @@ function PriceDrops({
                   aria-label="Previous deals"
                   className={`${arrowBtn} border-shop-ink text-shop-ink hover:bg-shop-ink hover:text-white`}
                 >
-                  <svg {...iconProps} className="h-4 w-4">
-                    <path d="m15 6-6 6 6 6" />
-                  </svg>
+                  <ChevronLeft size={16} aria-hidden />
                 </button>
                 <button
                   type="button"
@@ -391,9 +365,7 @@ function PriceDrops({
                   aria-label="Next deals"
                   className={`${arrowBtn} border-shop-blue bg-shop-blue text-white hover:border-shop-ink hover:bg-shop-ink`}
                 >
-                  <svg {...iconProps} className="h-4 w-4">
-                    <path d="m9 6 6 6-6 6" />
-                  </svg>
+                  <ChevronRight size={16} aria-hidden />
                 </button>
               </div>
             )}

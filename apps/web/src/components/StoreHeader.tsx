@@ -1,3 +1,4 @@
+import { Bell, Menu, Search, User, X } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,16 +17,6 @@ const NAV: { label: string; to?: string; href?: string }[] = [
   { label: "About", to: "/project" },
 ];
 
-const iconProps = {
-  viewBox: "0 0 24 24",
-  "aria-hidden": true,
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.8,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-} as const;
-
 const navItemClass =
   "block border-t border-white/20 px-5 py-3 text-center font-display text-lg tracking-wide transition hover:bg-white/10 md:border-r md:border-t-0";
 
@@ -41,7 +32,9 @@ export function StoreHeader() {
   function onSearch(e: FormEvent) {
     e.preventDefault();
     const q = text.trim();
-    navigate(q ? `/prices/search?q=${encodeURIComponent(q)}` : "/prices/search");
+    navigate(
+      q ? `/prices/search?q=${encodeURIComponent(q)}` : "/prices/search",
+    );
   }
 
   return (
@@ -50,7 +43,9 @@ export function StoreHeader() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-2 text-xs sm:text-sm">
           <p>
             <strong className="font-bold uppercase">Live prices</strong>{" "}
-            <span className="text-white/90">rechecked every 30 minutes across stores.</span>
+            <span className="text-white/90">
+              rechecked every 30 minutes across stores.
+            </span>
           </p>
           <p className="hidden items-center gap-4 md:flex">
             <span>Prices in ₹</span>
@@ -63,7 +58,11 @@ export function StoreHeader() {
 
       <div className="bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-4">
-          <Link to="/" aria-label="VilaiWatch home" className="order-1 text-shop-ink">
+          <Link
+            to="/"
+            aria-label="VilaiWatch home"
+            className="order-1 text-shop-ink"
+          >
             <Logo name="VilaiWatch" />
           </Link>
 
@@ -88,10 +87,7 @@ export function StoreHeader() {
               aria-label="Search"
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
             >
-              <svg {...iconProps} className="h-4 w-4">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
+              <Search size={16} aria-hidden />
             </button>
           </form>
 
@@ -100,20 +96,17 @@ export function StoreHeader() {
               to={authed ? "/prices" : "/login?next=/prices"}
               className="flex items-center gap-2 text-sm font-medium text-slate-700 transition hover:text-shop-blue"
             >
-              <svg {...iconProps} className="h-5 w-5">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-              </svg>
-              <span className="hidden sm:inline">{authed ? "My account" : "Sign in"}</span>
+              <User size={20} aria-hidden />
+              <span className="hidden sm:inline">
+                {authed ? "My account" : "Sign in"}
+              </span>
             </Link>
             <Link
               to="/prices/alerts"
               aria-label={`Price alerts, ${activeAlerts} active`}
               className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-300 text-shop-ink transition hover:border-shop-blue hover:text-shop-blue"
             >
-              <svg {...iconProps} className="h-5 w-5">
-                <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />
-              </svg>
+              <Bell size={20} aria-hidden />
               <span
                 aria-hidden
                 className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-shop-blue px-1 text-[11px] font-bold text-white"
@@ -137,12 +130,17 @@ export function StoreHeader() {
               aria-label="Toggle menu"
               className="flex h-10 w-10 items-center justify-center rounded-md border border-white/40"
             >
-              <svg {...iconProps} className="h-5 w-5" strokeWidth={2}>
-                {menuOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-              </svg>
+              {menuOpen ? (
+                <X size={20} aria-hidden />
+              ) : (
+                <Menu size={20} aria-hidden />
+              )}
             </button>
           </div>
-          <ul id="store-menu" className={`${menuOpen ? "block" : "hidden"} md:flex md:border-l md:border-white/20`}>
+          <ul
+            id="store-menu"
+            className={`${menuOpen ? "block" : "hidden"} md:flex md:border-l md:border-white/20`}
+          >
             {NAV.map((item) => (
               <li key={item.label} className="md:flex-1">
                 {item.to ? (
@@ -155,7 +153,11 @@ export function StoreHeader() {
                     {item.label}
                   </Link>
                 ) : (
-                  <a href={item.href} onClick={() => setMenuOpen(false)} className={navItemClass}>
+                  <a
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={navItemClass}
+                  >
                     {item.label}
                   </a>
                 )}

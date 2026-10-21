@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 /** "live" = WebSocket connected; "connecting" = first attempt; "polling" = socket down, relying on 60s refetches. */
 export type LiveStatus = "connecting" | "live" | "polling";
-export type FlashDirection = "down" | "up";
+type FlashDirection = "down" | "up";
 
 const FLASH_MS = 2500;
 

@@ -5,7 +5,7 @@ export interface StepPoint {
   price: number;
 }
 
-export interface StoreSeries {
+interface StoreSeries {
   store: string;
   points: StepPoint[]; // ascending; each price holds until the next point (the last until "now")
 }
@@ -19,7 +19,7 @@ export interface PriceStats {
 
 export type AdviceTone = "good" | "fair" | "wait" | "unknown";
 
-export interface BuyAdvice {
+interface BuyAdvice {
   tone: AdviceTone;
   headline: string;
   detail: string;

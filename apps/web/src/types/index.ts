@@ -4,12 +4,11 @@
 export type MonitorStatus = "active" | "paused" | "error";
 export type FetcherType = "http" | "browser" | "feed";
 export type ExtractorType = "css" | "xpath" | "jsonpath" | "readability";
-export type DiffType = "text" | "json" | "visual";
+type DiffType = "text" | "json" | "visual";
 export type ChangeSignificance = "noise" | "minor" | "moderate" | "major" | "critical";
 export type ChannelType = "email" | "slack" | "discord" | "telegram" | "webhook";
-export type WorkspaceRole = "owner" | "admin" | "member" | "viewer";
 
-export interface IgnoreRule {
+interface IgnoreRule {
   pattern: string;
   type: "regex" | "literal";
 }
@@ -58,17 +57,6 @@ export interface Change {
 
 export interface ChangeDetail extends Change {
   diff_payload: string;
-}
-
-export interface Snapshot {
-  id: string;
-  monitor_id: string;
-  run_id: string;
-  content_hash: string;
-  content_type: string;
-  size_bytes: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface Channel {
