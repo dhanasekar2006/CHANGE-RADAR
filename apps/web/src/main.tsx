@@ -4,7 +4,10 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 import { App } from "@/App";
+import { initTheme } from "@/hooks/useTheme";
 import "@/styles/index.css";
+
+initTheme();
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

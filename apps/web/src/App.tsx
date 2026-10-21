@@ -9,6 +9,7 @@ import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/Login";
 import { PriceDashboard } from "@/pages/PriceDashboard";
 import { Product } from "@/pages/Product";
+import { Settings } from "@/pages/Settings";
 import { Project } from "@/pages/Project";
 import { Storefront } from "@/pages/Storefront";
 
@@ -28,6 +29,7 @@ export function App() {
         <Route path="search" element={<Home />} />
         <Route path="p/:productId" element={<Product />} />
         <Route path="insights" element={<Insights />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="alerts" element={<Alerts />} />
       </Route>
       <Route path="*" element={<Navigate to="/prices" replace />} />
