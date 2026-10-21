@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import { useDeals, useSearch } from "@/api/priceHooks";
 import { StoreFooter } from "@/components/StoreFooter";
 import { StoreHeader } from "@/components/StoreHeader";
+import { ProductArt } from "@/components/ui/ProductArt";
 import { formatINR } from "@/lib/format";
+import { artKind } from "@/lib/productArt";
 import type { Deal } from "@/types/prices";
 
 // Public storefront home: deals slider + category list, then a price-drops section.
@@ -47,16 +49,24 @@ function toSlide(deal: Deal): Slide {
   };
 }
 
-function Thumb({ name, src, className = "" }: { name: string; src: string | null; className?: string }) {
+function Thumb({
+  name,
+  src,
+  className = "",
+}: {
+  name: string;
+  src: string | null;
+  className?: string;
+}) {
   return src ? (
-    <img src={src} alt="" loading="lazy" className={`bg-shop-mist object-cover ${className}`} />
+    <img
+      src={src}
+      alt=""
+      loading="lazy"
+      className={`bg-shop-mist object-cover ${className}`}
+    />
   ) : (
-    <div
-      aria-hidden
-      className={`flex items-center justify-center bg-gradient-to-br from-sky-100 to-shop-mist font-display text-4xl text-shop-blue ${className}`}
-    >
-      {name.charAt(0)}
-    </div>
+    <ProductArt kind={artKind(name, null)} className={className} />
   );
 }
 
@@ -74,22 +84,33 @@ const arrowBtn =
   "flex h-10 w-10 items-center justify-center rounded-full border-2 transition disabled:cursor-not-allowed disabled:opacity-40";
 
 function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
-  const slides = deals.length > 0 ? deals.slice(0, 3).map(toSlide) : [FALLBACK_SLIDE];
+  const slides =
+    deals.length > 0 ? deals.slice(0, 3).map(toSlide) : [FALLBACK_SLIDE];
   const count = slides.length;
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(
-    () => typeof window !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () =>
+      typeof window !== "undefined" &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
   const [held, setHeld] = useState(false);
 
   useEffect(() => {
     if (!playing || held || count < 2) return;
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
+    const id = window.setInterval(
+      () => setIndex((i) => (i + 1) % count),
+      SLIDE_MS,
+    );
     return () => window.clearInterval(id);
   }, [playing, held, count]);
 
   if (loading && deals.length === 0) {
-    return <div aria-busy="true" className="min-h-[20rem] animate-pulse bg-shop-ink/90 lg:min-h-[22rem]" />;
+    return (
+      <div
+        aria-busy="true"
+        className="min-h-[20rem] animate-pulse bg-shop-ink/90 lg:min-h-[22rem]"
+      />
+    );
   }
 
   const current = slides[index % count];
@@ -113,25 +134,31 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
         className="absolute inset-0"
       >
         {current.image ? (
-          <img src={current.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
+          <img
+            src={current.image}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover opacity-40"
+          />
         ) : (
           <>
             <div className="absolute inset-0 bg-gradient-to-br from-shop-ink via-shop-ink to-shop-blue" />
-            <span
-              aria-hidden
-              className="absolute -right-4 top-1/2 -translate-y-1/2 select-none font-display text-[16rem] leading-none text-white/10"
-            >
-              {current.title.charAt(0)}
-            </span>
+            <ProductArt
+              kind={artKind(current.title, null)}
+              className="absolute right-[4%] top-1/2 hidden h-72 w-72 -translate-y-1/2 !bg-transparent md:block"
+            />
           </>
         )}
         <div className="absolute inset-y-0 left-[6%] right-[6%] flex flex-col justify-center pb-10 md:right-[35%]">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] sm:text-sm">{current.eyebrow}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] sm:text-sm">
+            {current.eyebrow}
+          </p>
           <h2 className="mt-2 line-clamp-3 font-display text-3xl leading-tight tracking-wide sm:text-4xl lg:text-5xl">
             {current.title}
           </h2>
           <span aria-hidden className="my-4 block h-1 w-16 bg-sky-400" />
-          <p className="hidden max-w-md text-sm text-slate-200 sm:block">{current.text}</p>
+          <p className="hidden max-w-md text-sm text-slate-200 sm:block">
+            {current.text}
+          </p>
           <Link
             to={current.to}
             className="mt-5 inline-flex w-fit rounded-full bg-shop-blue px-6 py-2.5 font-display text-base uppercase tracking-wider text-white ring-1 ring-white/30 transition hover:bg-white hover:text-shop-ink"
@@ -165,8 +192,17 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
               aria-label={playing ? "Pause slideshow" : "Play slideshow"}
               className="ml-2 flex h-6 w-6 items-center justify-center rounded-full border border-white/60 text-white"
             >
-              <svg {...iconProps} className="h-3 w-3" fill="currentColor" strokeWidth={0}>
-                {playing ? <path d="M7 5h3v14H7zM14 5h3v14h-3z" /> : <path d="M8 5v14l11-7z" />}
+              <svg
+                {...iconProps}
+                className="h-3 w-3"
+                fill="currentColor"
+                strokeWidth={0}
+              >
+                {playing ? (
+                  <path d="M7 5h3v14H7zM14 5h3v14h-3z" />
+                ) : (
+                  <path d="M8 5v14l11-7z" />
+                )}
               </svg>
             </button>
           </div>
@@ -198,7 +234,13 @@ function HeroSlider({ deals, loading }: { deals: Deal[]; loading: boolean }) {
   );
 }
 
-function CategoryList({ categories, loading }: { categories: string[]; loading: boolean }) {
+function CategoryList({
+  categories,
+  loading,
+}: {
+  categories: string[];
+  loading: boolean;
+}) {
   const rowClass =
     "flex items-center justify-between px-5 py-3 text-sm text-slate-700 transition hover:bg-shop-mist hover:text-shop-blue";
   const caret = (
@@ -229,7 +271,10 @@ function CategoryList({ categories, loading }: { categories: string[]; loading: 
           <>
             {categories.map((c) => (
               <li key={c}>
-                <Link to={`/prices/search?q=${encodeURIComponent(c)}`} className={rowClass}>
+                <Link
+                  to={`/prices/search?q=${encodeURIComponent(c)}`}
+                  className={rowClass}
+                >
                   {c}
                   {caret}
                 </Link>
@@ -248,7 +293,15 @@ function CategoryList({ categories, loading }: { categories: string[]; loading: 
   );
 }
 
-function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolean; failed: boolean }) {
+function PriceDrops({
+  deals,
+  loading,
+  failed,
+}: {
+  deals: Deal[];
+  loading: boolean;
+  failed: boolean;
+}) {
   const [page, setPage] = useState(0);
   const pages = Math.max(1, Math.ceil(deals.length / PAGE_SIZE));
   const current = Math.min(page, pages - 1);
@@ -256,18 +309,30 @@ function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolea
   const featured = deals[0];
 
   return (
-    <section id="drops" aria-labelledby="drops-title" className="mx-auto mt-12 max-w-6xl scroll-mt-4 px-4">
+    <section
+      id="drops"
+      aria-labelledby="drops-title"
+      className="mx-auto mt-12 max-w-6xl scroll-mt-4 px-4"
+    >
       <div className="grid gap-8 lg:grid-cols-[17rem_1fr]">
         {featured ? (
           <div className="flex flex-col bg-shop-mist p-5">
-            <p className="font-display text-4xl uppercase tracking-wide text-shop-ink">Sale</p>
+            <p className="font-display text-4xl uppercase tracking-wide text-shop-ink">
+              Sale
+            </p>
             <p className="mt-1 text-xs font-medium uppercase tracking-[0.3em] text-slate-700">
               Up to {Math.round(featured.drop_pct)}% off
             </p>
-            <p className="mt-3 line-clamp-2 text-sm font-medium text-shop-ink">{featured.name}</p>
+            <p className="mt-3 line-clamp-2 text-sm font-medium text-shop-ink">
+              {featured.name}
+            </p>
             <p className="mt-1 text-sm">
-              <span className="font-bold text-shop-ink">{formatINR(featured.price)}</span>{" "}
-              <del className="text-slate-600">{formatINR(featured.avg_30d)}</del>
+              <span className="font-bold text-shop-ink">
+                {formatINR(featured.price)}
+              </span>{" "}
+              <del className="text-slate-600">
+                {formatINR(featured.avg_30d)}
+              </del>
             </p>
             <Link
               to={`/prices/p/${featured.product_id}`}
@@ -275,20 +340,32 @@ function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolea
             >
               View deal
             </Link>
-            <Thumb name={featured.name} src={featured.image_url} className="mt-5 min-h-[10rem] flex-1 rounded-lg" />
+            <Thumb
+              name={featured.name}
+              src={featured.image_url}
+              className="mt-5 min-h-[10rem] flex-1 rounded-lg"
+            />
           </div>
         ) : (
-          <div aria-hidden className="hidden min-h-[16rem] bg-shop-mist lg:block" />
+          <div
+            aria-hidden
+            className="hidden min-h-[16rem] bg-shop-mist lg:block"
+          />
         )}
 
         <div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 id="drops-title" className="font-display text-2xl uppercase tracking-wider text-shop-ink">
+              <h2
+                id="drops-title"
+                className="font-display text-2xl uppercase tracking-wider text-shop-ink"
+              >
                 Price drops
               </h2>
               <span aria-hidden className="mt-1 block h-1 w-12 bg-shop-blue" />
-              <p className="mt-2 text-sm text-slate-600">Cheapest in-stock price vs its 30-day average.</p>
+              <p className="mt-2 text-sm text-slate-600">
+                Cheapest in-stock price vs its 30-day average.
+              </p>
             </div>
             {pages > 1 && (
               <div className="flex gap-2">
@@ -321,15 +398,25 @@ function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolea
           {loading ? (
             <div aria-busy="true" className="mt-6 grid gap-5 sm:grid-cols-2">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="h-24 animate-pulse rounded bg-shop-mist" />
+                <div
+                  key={i}
+                  className="h-24 animate-pulse rounded bg-shop-mist"
+                />
               ))}
             </div>
           ) : visible.length > 0 ? (
             <ul className="mt-6 grid gap-5 sm:grid-cols-2">
               {visible.map((deal) => (
                 <li key={deal.product_id}>
-                  <Link to={`/prices/p/${deal.product_id}`} className="group flex items-center gap-4">
-                    <Thumb name={deal.name} src={deal.image_url} className="h-24 w-24 shrink-0" />
+                  <Link
+                    to={`/prices/p/${deal.product_id}`}
+                    className="group flex items-center gap-4"
+                  >
+                    <Thumb
+                      name={deal.name}
+                      src={deal.image_url}
+                      className="h-24 w-24 shrink-0"
+                    />
                     <div className="min-w-0">
                       <h3 className="line-clamp-2 font-display text-lg leading-snug tracking-wide text-shop-ink transition group-hover:text-shop-blue">
                         {deal.name}
@@ -338,9 +425,15 @@ function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolea
                         at <span className="capitalize">{deal.store}</span>
                       </p>
                       <p className="mt-1 flex flex-wrap items-baseline gap-x-2 text-sm">
-                        <span className="font-bold text-shop-ink">{formatINR(deal.price)}</span>
-                        <del className="text-slate-600">{formatINR(deal.avg_30d)}</del>
-                        <span className="text-xs font-semibold text-emerald-700">−{deal.drop_pct.toFixed(1)}%</span>
+                        <span className="font-bold text-shop-ink">
+                          {formatINR(deal.price)}
+                        </span>
+                        <del className="text-slate-600">
+                          {formatINR(deal.avg_30d)}
+                        </del>
+                        <span className="text-xs font-semibold text-emerald-700">
+                          −{deal.drop_pct.toFixed(1)}%
+                        </span>
                       </p>
                     </div>
                   </Link>
@@ -349,8 +442,13 @@ function PriceDrops({ deals, loading, failed }: { deals: Deal[]; loading: boolea
             </ul>
           ) : (
             <p className="mt-6 rounded border border-dashed border-slate-300 px-6 py-10 text-center text-slate-600">
-              {failed ? "Deals couldn't be loaded right now." : "No price drops right now. They appear here when a price falls below its recent average."}{" "}
-              <Link to="/prices/search" className="font-semibold text-shop-blue underline">
+              {failed
+                ? "Deals couldn't be loaded right now."
+                : "No price drops right now. They appear here when a price falls below its recent average."}{" "}
+              <Link
+                to="/prices/search"
+                className="font-semibold text-shop-blue underline"
+              >
                 Track a product
               </Link>
             </p>
@@ -367,7 +465,11 @@ export function Storefront() {
 
   const dealList = deals.data ?? [];
   const categories = [
-    ...new Set((tracked.data?.items ?? []).map((p) => p.category).filter((c): c is string => Boolean(c))),
+    ...new Set(
+      (tracked.data?.items ?? [])
+        .map((p) => p.category)
+        .filter((c): c is string => Boolean(c)),
+    ),
   ].sort();
 
   return (
@@ -380,7 +482,11 @@ export function Storefront() {
             <CategoryList categories={categories} loading={tracked.isPending} />
           </div>
         </div>
-        <PriceDrops deals={dealList} loading={deals.isPending} failed={deals.isError} />
+        <PriceDrops
+          deals={dealList}
+          loading={deals.isPending}
+          failed={deals.isError}
+        />
       </main>
       <StoreFooter categories={categories} />
     </div>
