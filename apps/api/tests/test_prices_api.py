@@ -188,6 +188,56 @@ async def test_track_rejects_unsupported_store(client) -> None:
     assert response.status_code == 422
 
 
+# --- observe (browser extension) ---------------------------------------------------
+
+
+@pytest.fixture
+def queued(monkeypatch) -> list[uuid.UUID]:
+    calls: list[uuid.UUID] = []
+    monkeypatch.setattr("src.services.task_dispatch.enqueue_check_listing", calls.append)
+    return calls
+
+
+@pytest.mark.asyncio
+async def test_observe_queues_a_check_for_a_stale_listing(client, db, queued) -> None:
+    product, listing = await make_product(db, "Headphones", url="http://localhost:8008/p/headphones")
+    listing.last_checked_at = NOW - timedelta(minutes=10)
+    await db.commit()
+
+    # the extension sends the URL as the browser has it: tracking params, trailing slash, https
+    response = await client.post(
+        "/products/observe", json={"url": "https://localhost:8008/p/headphones/?utm_source=x"}
+    )
+    assert response.status_code == 200
+    assert response.json() == {"status": "queued", "product_id": str(product.id), "supported": True}
+    assert queued == [listing.id]
+
+
+@pytest.mark.asyncio
+async def test_observe_skips_a_listing_checked_within_the_cooldown(client, db, queued) -> None:
+    product, _ = await make_product(db, "Headphones", url="http://localhost:8008/p/fresh")
+    response = await client.post("/products/observe", json={"url": "http://localhost:8008/p/fresh"})
+    assert response.json() == {"status": "fresh", "product_id": str(product.id), "supported": True}
+    assert queued == []
+
+
+@pytest.mark.asyncio
+async def test_observe_untracked_url_says_whether_it_could_be_tracked(client, queued) -> None:
+    supported = await client.post("/products/observe", json={"url": "http://localhost:8008/p/new-item"})
+    assert supported.json() == {"status": "untracked", "product_id": None, "supported": True}
+
+    unsupported = await client.post("/products/observe", json={"url": "https://unsupported-store.example/item/1"})
+    assert unsupported.json() == {"status": "untracked", "product_id": None, "supported": False}
+    assert queued == []
+
+
+@pytest.mark.asyncio
+async def test_observe_requires_sign_in(client) -> None:
+    app.dependency_overrides.pop(get_current_user)
+    response = await client.post("/products/observe", json={"url": "http://localhost:8008/p/x"})
+    assert response.status_code == 401
+
+
 # --- deals --------------------------------------------------------------------------
 
 

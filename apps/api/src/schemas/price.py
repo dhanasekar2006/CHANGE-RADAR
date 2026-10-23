@@ -67,6 +67,18 @@ class TrackRequest(BaseModel):
     url: str = Field(min_length=8, max_length=2048)
 
 
+class ObserveRequest(BaseModel):
+    url: str = Field(min_length=8, max_length=2048)
+
+
+class ObserveResponse(BaseModel):
+    status: Literal["queued", "fresh", "untracked"]
+    """queued: a check was just requested; fresh: checked within the cooldown, nothing queued;
+    untracked: no listing has this URL (see `supported` for whether it can be tracked)."""
+    product_id: uuid.UUID | None = None
+    supported: bool
+
+
 _PHONE_SEPARATORS = re.compile(r"[\s\-().]")
 _E164 = re.compile(r"^\+[1-9]\d{7,14}$")
 

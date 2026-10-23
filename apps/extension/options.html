@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VilaiWatch options</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; max-width: 420px; margin: 24px; color: #111; }
+      label { display: block; margin-top: 12px; }
+      input { width: 100%; padding: 6px; box-sizing: border-box; }
+      button { margin-top: 16px; padding: 6px 12px; }
+      #message { margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>VilaiWatch</h1>
+    <form id="form">
+      <label>API URL <input id="apiUrl" type="url" required /></label>
+      <label>Web app URL <input id="webUrl" type="url" required /></label>
+      <label>Email <input id="email" type="email" autocomplete="username" /></label>
+      <label>Password <input id="password" type="password" autocomplete="current-password" /></label>
+      <button type="submit">Save and sign in</button>
+    </form>
+    <div id="message"></div>
+    <script src="api.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

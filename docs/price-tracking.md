@@ -25,6 +25,10 @@ React    useLivePrices  ◄──────────────┘  patche
                                            price, Best badge, stats, chart, flash, toast
 ```
 
+Besides the schedule, the browser extension (`apps/extension`) calls `POST /products/observe` when a
+signed-in user opens a tracked product page, which queues the same `check_listing` immediately. The
+price the browser saw is not stored; the worker reads the page itself.
+
 Failures: a fetch error retries with jittered exponential backoff (up to 6
 times); a robots.txt block or an unreadable page is logged and not retried.
 Redis being down never fails a check whose result is already saved.
@@ -46,6 +50,7 @@ Prices are in rupees (INR); there is no currency conversion.
 | --- | --- | --- |
 | `GET /products/search?q=` | – | Name/category search. A pasted listing URL returns the product it belongs to (`is_url: true`). |
 | `POST /products/track {url}` | user | Start tracking a URL we have an adapter for (fetches it once to read the name and price). |
+| `POST /products/observe {url}` | user | Someone is viewing this page (browser extension): queues an immediate check of the matching listing unless it was checked in the last 60 s. Returns `{status: queued\|fresh\|untracked, product_id, supported}`. |
 | `GET /products/{id}` | – | Product, each store's price/stock/`last_checked_at`, `is_best`, `best_price`. |
 | `GET /products/{id}/history?range=1M\|3M\|6M` | – | `[{date, price, store}]`, oldest first. Each store starts at the price in effect when the window opened (its date is clamped to the window start). |
 | `GET /deals/top` | – | Cheapest in-stock price furthest below its **time-weighted** 30-day average. |

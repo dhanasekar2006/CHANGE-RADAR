@@ -25,3 +25,7 @@ def _get_client() -> Celery:
 
 def enqueue_check_monitor(monitor_id: uuid.UUID) -> None:
     _get_client().send_task("worker.check_monitor", args=[str(monitor_id)], queue="checks")
+
+
+def enqueue_check_listing(listing_id: uuid.UUID) -> None:
+    _get_client().send_task("worker.prices.check_listing", args=[str(listing_id)], queue="checks")

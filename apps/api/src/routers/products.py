@@ -8,6 +8,8 @@ from fastapi import APIRouter, Query, status
 from src.deps import CurrentUser, DbSession
 from src.schemas.price import (
     HistoryPoint,
+    ObserveRequest,
+    ObserveResponse,
     ProductDetailOut,
     SearchResponse,
     TrackRequest,
@@ -28,6 +30,12 @@ async def track_product(payload: TrackRequest, _user: CurrentUser, db: DbSession
     """Start tracking a store URL that isn't known yet (requires a supported store adapter)."""
     product = await price_service.track_url(db, payload.url)
     return await price_service.get_product_detail(db, product.id)
+
+
+@router.post("/products/observe", response_model=ObserveResponse)
+async def observe_product_page(payload: ObserveRequest, _user: CurrentUser, db: DbSession) -> ObserveResponse:
+    """Called by the browser extension when a user opens a product page: re-checks a tracked listing now."""
+    return await price_service.observe_url(db, payload.url)
 
 
 @router.get("/products/{product_id}", response_model=ProductDetailOut)
