@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from urllib.parse import urlparse
 
 from sqlalchemy import and_, func, or_, select
@@ -15,10 +15,12 @@ from src.schemas.price import (
     DealOut,
     HistoryPoint,
     ListingOut,
+    ObserveResponse,
     ProductDetailOut,
     ProductSearchItem,
     SearchResponse,
 )
+from src.services import task_dispatch
 from packages.core.models import PriceAlert, PricePoint, Product, StoreListing, User
 from packages.core.prices.adapters import adapter_for_url
 from packages.core.prices.urls import path_needle, url_key
@@ -27,6 +29,8 @@ from packages.shared.errors import NotFoundError, ValidationError
 
 SEARCH_LIMIT = 20
 DEALS_LIMIT = 10
+# A listing checked this recently is not re-queued when someone views its page again.
+OBSERVE_COOLDOWN = timedelta(seconds=60)
 
 
 def _best(listings: list[StoreListing]) -> StoreListing | None:
@@ -55,8 +59,8 @@ def _like_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
-async def find_product_by_url(db: AsyncSession, url: str) -> Product | None:
-    """The product whose listing is the same page as `url` (see urls.url_key for what "same" means)."""
+async def find_listing_by_url(db: AsyncSession, url: str) -> StoreListing | None:
+    """The listing that is the same page as `url` (see urls.url_key for what "same" means)."""
     key = url_key(url)
     needle = path_needle(url)
     stmt = select(StoreListing)
@@ -64,8 +68,14 @@ async def find_product_by_url(db: AsyncSession, url: str) -> Product | None:
         stmt = stmt.where(StoreListing.url.ilike(f"%{_like_escape(needle)}%", escape="\\"))
     for listing in await db.scalars(stmt):
         if url_key(listing.url) == key:
-            return await db.get(Product, listing.product_id)
+            return listing
     return None
+
+
+async def find_product_by_url(db: AsyncSession, url: str) -> Product | None:
+    """The product whose listing is the same page as `url`."""
+    listing = await find_listing_by_url(db, url)
+    return await db.get(Product, listing.product_id) if listing else None
 
 
 async def search_products(db: AsyncSession, q: str) -> SearchResponse:
@@ -284,6 +294,30 @@ async def track_url(db: AsyncSession, url: str) -> Product:
     await db.commit()
     await db.refresh(product)
     return product
+
+
+# --- a user is looking at a product page (browser extension) ----------------------
+
+
+async def observe_url(db: AsyncSession, url: str, now: datetime | None = None) -> ObserveResponse:
+    """Re-check a tracked listing now because someone is viewing its page.
+
+    The price the viewer's browser sees is deliberately not accepted: the worker
+    fetches the page itself through the normal check, so a forged report can't
+    write history or fire other users' alerts. The update then reaches every open
+    /prices tab over /ws/prices like any scheduled check.
+    """
+    now = now or datetime.now(UTC)
+    url = url.strip()
+    listing = await find_listing_by_url(db, url)
+    if listing is None:
+        return ObserveResponse(status="untracked", supported=adapter_for_url(url) is not None)
+
+    if listing.last_checked_at is not None and now - as_utc(listing.last_checked_at) < OBSERVE_COOLDOWN:
+        return ObserveResponse(status="fresh", product_id=listing.product_id, supported=True)
+
+    task_dispatch.enqueue_check_listing(listing.id)
+    return ObserveResponse(status="queued", product_id=listing.product_id, supported=True)
 
 
 # --- alerts -----------------------------------------------------------------------

@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "VilaiWatch",
+  "version": "0.1.0",
+  "description": "Re-checks a tracked product's price the moment you open its page, and lets you start tracking new ones.",
+  "permissions": ["storage"],
+  "host_permissions": ["http://localhost:8000/*"],
+  "optional_host_permissions": ["https://*/*", "http://*/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost:8008/*",
+        "https://www.croma.com/*",
+        "https://www.reliancedigital.in/*",
+        "https://www.tatacliq.com/*"
+      ],
+      "js": ["product.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "VilaiWatch" },
+  "options_page": "options.html"
+}

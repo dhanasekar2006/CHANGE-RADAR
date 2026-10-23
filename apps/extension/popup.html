@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font: 14px system-ui, sans-serif; width: 280px; margin: 12px; color: #111; }
+      h1 { font-size: 15px; margin: 0 0 8px; }
+      .price { font-size: 20px; font-weight: 600; margin: 4px 0; }
+      .muted { color: #6b7280; }
+      button, a.button { display: inline-block; margin-top: 10px; padding: 6px 12px; border: 0; border-radius: 6px;
+        background: #2563eb; color: #fff; font: inherit; text-decoration: none; cursor: pointer; }
+      button:disabled { opacity: 0.6; cursor: default; }
+    </style>
+  </head>
+  <body>
+    <h1 id="name">VilaiWatch</h1>
+    <div id="price" class="price"></div>
+    <div id="status" class="muted">Open a product page from a supported store.</div>
+    <div id="actions"></div>
+    <script src="api.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
