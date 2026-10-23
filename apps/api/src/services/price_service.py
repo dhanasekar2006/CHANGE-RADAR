@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from urllib.parse import urlparse
 
 from sqlalchemy import and_, func, or_, select
@@ -307,7 +307,7 @@ async def observe_url(db: AsyncSession, url: str, now: datetime | None = None) -
     write history or fire other users' alerts. The update then reaches every open
     /prices tab over /ws/prices like any scheduled check.
     """
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     url = url.strip()
     listing = await find_listing_by_url(db, url)
     if listing is None:
